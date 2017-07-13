@@ -5,9 +5,16 @@ A WordPress plugin for editing the title and description `<meta>` tag for your p
 
 Filter the post types and add additional title and description inputs, eg. for sites with multiple languages:
 
+	// Filter metazoinks options.
 	add_filter( 'metazoinks_options', 'myprefix_filter_metazoinks_options' );
 
-	public function myprefix_filter_metazoinks_options( $options ) {
+	/**
+	 * Filter metazoinks options.
+	 *
+	 * @param array $options List of options.
+	 * @return array
+	 */
+	function myprefix_filter_metazoinks_options( $options ) {
 
 		$options['post_types'] = array( 'post', 'my_cool_post_type' );
 
@@ -26,12 +33,19 @@ Filter the post types and add additional title and description inputs, eg. for s
 
 Do something with your additional inputs:
 
+	// Filter document title.
 	add_filter( 'metazoinks_title', 'myprefix_filter_metazoinks_title' );
 
-	public function myprefix_filter_metazoinks_title( $title ) {
+	/**
+	 * Filter document title.
+	 *
+	 * @param string $title Document title.
+	 * @return string
+	 */
+	function myprefix_filter_metazoinks_title( $title ) {
 
 		// Assuming you have some sort of multilanguage setup, stuff like this might work.
-		if ( 'fr_FR' !== get_locale() ) {
+		if ( 'fr_FR' === get_locale() ) {
 
 			global $post;
 
