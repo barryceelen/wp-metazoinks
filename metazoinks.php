@@ -41,7 +41,7 @@ function metazoinks_title( $title ) {
 		global $post;
 
 		if ( ! empty( $post->metazoinks_title ) ) {
-			return $post->metazoinks_title;
+			$title = $post->metazoinks_title;
 		}
 	}
 
@@ -70,17 +70,20 @@ function metazoinks_description() {
 
 	if ( ! empty( $post->metazoinks_description ) ) {
 
-		/**
-		 * Filter the description.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param string $title Description meta tag string.
-		 */
-		$description = apply_filters( 'metazoinks_description', $post->metazoinks_description );
-
-		echo '<meta name="description" content="' . esc_attr( $description ) . '">';
+		$description = $post->metazoinks_description;
 	}
+
+	/**
+	 * Filter the description.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $title Description meta tag string.
+	 */
+	$description = apply_filters( 'metazoinks_description', $post->metazoinks_description );
+
+	echo '<meta name="description" content="' . esc_attr( $description ) . '">';
+
 }
 
 /**
