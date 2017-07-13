@@ -3,7 +3,7 @@
 A.K.A "Yet Another Meta Description Plugin."
 A WordPress plugin for editing the title and description `<meta>` tag for your public post types.
 
-Filter the post types and add additional title and description inputs, eg. for sites with multiple languages:
+Filter the post types and/or add additional title and description inputs (eg. for sites with multiple languages):
 
 	// Filter metazoinks options.
 	add_filter( 'metazoinks_options', 'myprefix_filter_metazoinks_options' );
