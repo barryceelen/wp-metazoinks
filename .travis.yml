@@ -6,9 +6,6 @@ matrix:
     - php: '7.0'
       env: SNIFF=1
 
-before_script:
-  - phpenv config-rm xdebug.ini
-
 before_install:
   - if [[ "$SNIFF" == "1" ]]; then export PHPCS_DIR=/tmp/phpcs; fi
   - if [[ "$SNIFF" == "1" ]]; then export SNIFFS_DIR=/tmp/sniffs; fi
@@ -20,6 +17,9 @@ before_install:
   - if [[ "$SNIFF" == "1" ]]; then $PHPCS_DIR/scripts/phpcs --config-set installed_paths $SNIFFS_DIR; fi
   # After CodeSniffer install you should refresh your path.
   - if [[ "$SNIFF" == "1" ]]; then phpenv rehash; fi
+
+before_script:
+  - phpenv config-rm xdebug.ini
 
 script:
   # Run against WordPress Coding Standards.
