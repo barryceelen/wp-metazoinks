@@ -132,7 +132,8 @@ class Metazoinks_Admin {
 		wp_nonce_field( 'save-metazoinks', 'metazoinks-nonce', true );
 
 		// Todo: Ok, wait, this path stuff is crazy...
-		include( WP_PLUGIN_DIR . '/' . dirname( plugin_basename( __DIR__ ) ) . '/admin/templates/tmpl-meta-box.php' );
+		$path = strpos( __FILE__, basename( WPMU_PLUGIN_DIR ) ) ? WPMU_PLUGIN_DIR : WP_PLUGIN_DIR;
+		include( trailingslashit( $path ) . dirname( plugin_basename( __DIR__ ) ) . '/admin/templates/tmpl-meta-box.php' );
 	}
 
 	/**
