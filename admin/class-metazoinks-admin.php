@@ -35,12 +35,12 @@ class Metazoinks_Admin {
 	private function __construct() {
 
 		$defaults = array(
-			'post_types' => get_post_types(
+			'post_types'         => get_post_types(
 				array(
 					'public' => true,
 				)
 			),
-			'title_inputs' => array(
+			'title_inputs'       => array(
 				array(
 					'label'    => __( 'Title', 'metazoinks' ),
 					'meta_key' => '_metazoinks_title', // WPCS: slow query ok.
@@ -73,7 +73,7 @@ class Metazoinks_Admin {
 	 *
 	 * @return object A single instance of this class.
 	 */
-	static function get_instance() {
+	public static function get_instance() {
 		// If the single instance hasn't been set, set it now.
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -106,7 +106,7 @@ class Metazoinks_Admin {
 	 * @param string  $post_type Post type.
 	 * @param WP_Post $post      Post object.
 	 */
-	function add_meta_box( $post_type, $post ) {
+	public function add_meta_box( $post_type, $post ) {
 
 		add_meta_box(
 			'metazoinks',
@@ -124,7 +124,7 @@ class Metazoinks_Admin {
 	 * @since 1.0.0
 	 * @param WP_Post $post Post object.
 	 */
-	function render_meta_box( $post ) {
+	public function render_meta_box( $post ) {
 
 		$titles       = empty( $this->args['title_inputs'] ) ? array() : $this->args['title_inputs'];
 		$descriptions = empty( $this->args['description_inputs'] ) ? array() : $this->args['description_inputs'];
@@ -133,7 +133,7 @@ class Metazoinks_Admin {
 
 		// Todo: Ok, wait, this path stuff is crazy...
 		$path = strpos( __FILE__, basename( WPMU_PLUGIN_DIR ) ) ? WPMU_PLUGIN_DIR : WP_PLUGIN_DIR;
-		include( trailingslashit( $path ) . dirname( plugin_basename( __DIR__ ) ) . '/admin/templates/tmpl-meta-box.php' );
+		include trailingslashit( $path ) . dirname( plugin_basename( __DIR__ ) . '/admin/templates/tmpl-meta-box.php' );
 	}
 
 	/**
@@ -147,7 +147,7 @@ class Metazoinks_Admin {
 	 * @param  int     $post_id Post ID.
 	 * @param  WP_Post $post    Post object.
 	 */
-	function save_meta_box( $post_id, $post ) {
+	public function save_meta_box( $post_id, $post ) {
 
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;

@@ -100,5 +100,5 @@ function metazoinks_load_textdomain() {
 }
 
 if ( is_admin() ) {
-	include_once( 'admin/class-metazoinks-admin.php' );
+	include_once 'admin/class-metazoinks-admin.php';
 }
