@@ -4,7 +4,7 @@
  *
  * @package    WordPress
  * @subpackage Metazoinks
- * @version    1.0.0
+ * @version    1.0.1
  * @license    GPL-3.0+
  * @link       https://github.com/barryceelen/wp-metazoinks
  * @copyright  2017 Barry Ceelen
@@ -37,6 +37,11 @@ class Metazoinks_Admin {
 		$this->add_actions_and_filters();
 	}
 
+	/**
+	 * Get class arguments.
+	 *
+	 * @since 1.0.1
+	 */
 	private function args() {
 
 		$post_types = array_keys(
@@ -118,7 +123,7 @@ class Metazoinks_Admin {
 
 		$args = $this->args();
 
-		if ( ! in_array( $post_type, $args['post_types'] ) ) {
+		if ( ! in_array( $post_type, $args['post_types'], true ) ) {
 			return;
 		}
 
@@ -158,8 +163,7 @@ class Metazoinks_Admin {
 	 * @todo Combine
 	 *
 	 * @global array $wp_post_types
-	 * @param  int     $post_id Post ID.
-	 * @param  WP_Post $post    Post object.
+	 * @param  int $post_id Post ID.
 	 */
 	public function save_meta_box( $post_id ) {
 
