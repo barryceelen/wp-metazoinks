@@ -2,8 +2,7 @@
 /**
  * Main plugin file
  *
- * @package    WordPress
- * @subpackage Metazoinks
+ * @package    Metazoinks
  * @version    1.0.0
  * @license    GPL-3.0+
  * @link       https://github.com/barryceelen/wp-metazoinks
@@ -22,6 +21,8 @@
  * Domain Path:       /languages
  * GitHub Plugin URI: https://github.com/barryceelen/wp-metazoinks
  */
+
+define( 'METAZOINKS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
 add_filter( 'pre_get_document_title', 'metazoinks_title', 11 );
 add_action( 'wp_head', 'metazoinks_description', 11 );

@@ -34,12 +34,21 @@ class Metazoinks_Admin {
 	 */
 	private function __construct() {
 
-		$defaults = array(
-			'post_types'         => get_post_types(
+		$this->add_actions_and_filters();
+	}
+
+	private function args() {
+
+		$post_types = array_keys(
+			get_post_types(
 				array(
 					'public' => true,
 				)
-			),
+			)
+		);
+
+		$defaults = array(
+			'post_types'         => $post_types,
 			'title_inputs'       => array(
 				array(
 					'label'    => __( 'Title', 'metazoinks' ),
@@ -61,9 +70,7 @@ class Metazoinks_Admin {
 		 *
 		 * @param array $defaults An list of plugin defaults.
 		 */
-		$this->args = apply_filters( 'metazoinks_options', $defaults );
-
-		$this->add_actions_and_filters();
+		return apply_filters( 'metazoinks_options', $defaults );
 	}
 
 	/**
@@ -95,7 +102,8 @@ class Metazoinks_Admin {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ), 10, 2 );
 
 		// Save meta box values.
-		add_action( 'save_post', array( $this, 'save_meta_box' ), 10, 2 );
+		add_action( 'save_post', array( $this, 'save_meta_box' ), 10 );
+		add_action( 'edit_attachment', array( $this, 'save_meta_box' ), 10 );
 	}
 
 	/**
@@ -108,11 +116,17 @@ class Metazoinks_Admin {
 	 */
 	public function add_meta_box( $post_type, $post ) {
 
+		$args = $this->args();
+
+		if ( ! in_array( $post_type, $args['post_types'] ) ) {
+			return;
+		}
+
 		add_meta_box(
 			'metazoinks',
 			esc_html__( 'SEO Title and Description', 'metazoinks' ),
 			array( $this, 'render_meta_box' ),
-			$this->args['post_types'],
+			$post_type,
 			'normal',
 			'low'
 		);
@@ -126,14 +140,14 @@ class Metazoinks_Admin {
 	 */
 	public function render_meta_box( $post ) {
 
-		$titles       = empty( $this->args['title_inputs'] ) ? array() : $this->args['title_inputs'];
-		$descriptions = empty( $this->args['description_inputs'] ) ? array() : $this->args['description_inputs'];
+		$args = $this->args();
+
+		$titles       = empty( $args['title_inputs'] ) ? array() : $args['title_inputs'];
+		$descriptions = empty( $args['description_inputs'] ) ? array() : $args['description_inputs'];
 
 		wp_nonce_field( 'save-metazoinks', 'metazoinks-nonce', true );
 
-		// Todo: Ok, wait, this path stuff is crazy...
-		$path = strpos( __FILE__, basename( WPMU_PLUGIN_DIR ) ) ? WPMU_PLUGIN_DIR : WP_PLUGIN_DIR;
-		include trailingslashit( $path ) . dirname( plugin_basename( __DIR__ ) . '/admin/templates/tmpl-meta-box.php' );
+		include METAZOINKS_PLUGIN_DIR . '/admin/templates/tmpl-meta-box.php';
 	}
 
 	/**
@@ -147,7 +161,7 @@ class Metazoinks_Admin {
 	 * @param  int     $post_id Post ID.
 	 * @param  WP_Post $post    Post object.
 	 */
-	public function save_meta_box( $post_id, $post ) {
+	public function save_meta_box( $post_id ) {
 
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
@@ -165,8 +179,16 @@ class Metazoinks_Admin {
 			return;
 		}
 
-		if ( ! empty( $this->args['title_inputs'] ) ) {
-			foreach ( $this->args['title_inputs'] as $input ) { // Todo: Verify $this->args['title_inputs'] for correctness.
+		// Note: not using $post passed along to save_post as this function may be called by `edit_attachment`.
+		$post = get_post( $post_id );
+		$args = $this->args();
+
+		if ( ! in_array( $post->post_type, $args['post_types'], true ) ) {
+			return;
+		}
+
+		if ( ! empty( $args['title_inputs'] ) ) {
+			foreach ( $args['title_inputs'] as $input ) { // Todo: Verify $args['title_inputs'] for correctness.
 				if ( empty( $_POST['metazoinks_titles'][ $input['meta_key'] ] ) ) { // WPCS: input var okay.
 					delete_post_meta( $post_id, $input['meta_key'] );
 				} else {
@@ -179,8 +201,8 @@ class Metazoinks_Admin {
 			}
 		}
 
-		if ( ! empty( $this->args['description_inputs'] ) ) { // Todo: Verify $this->args['description_inputs'] for correctness.
-			foreach ( $this->args['description_inputs'] as $input ) {
+		if ( ! empty( $args['description_inputs'] ) ) { // Todo: Verify $args['description_inputs'] for correctness.
+			foreach ( $args['description_inputs'] as $input ) {
 				if ( empty( $_POST['metazoinks_descriptions'][ $input['meta_key'] ] ) ) { // WPCS: input var okay.
 					delete_post_meta( $post_id, $input['meta_key'] );
 				} else {
